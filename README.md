@@ -30,8 +30,10 @@ npm run dev        # servidor de desarrollo (Vite)
 | `npm run build` | `tsc --noEmit` + build de producción a `dist/` |
 | `npm run preview` | Sirve el build de producción |
 | `npm run typecheck` | Solo chequeo de tipos |
-| `npm test` | Corre la suite de tests una vez |
-| `npm run test:watch` | Tests en modo watch |
+| `npm test` | Corre los tests unitarios una vez |
+| `npm run test:watch` | Tests unitarios en modo watch |
+| `npm run e2e` | Tests end-to-end (Playwright) |
+| `npm run e2e:ui` | E2E en modo interactivo |
 | `npm run ci` | Gate de integración: `tsc --noEmit && vitest run` |
 
 ## Qué incluye
@@ -67,8 +69,12 @@ Desde el panel de resumen se generan tres formatos (ver `src/lib/export.ts`):
 
 ## Tests y CI
 
-La suite cubre lógica de estado, derivación web/panel/mixto, render de los gadgets en todos los rubros, contraste AA de los estilos, y el export del spec. El workflow de [GitHub Actions](.github/workflows/ci.yml) corre `npm run ci` y el build de producción en cada push y pull request.
+- **Unitarios (Vitest):** lógica de estado, derivación web/panel/mixto, render de los gadgets en todos los rubros, contraste AA de los estilos, y el export del spec.
+- **E2E (Playwright, en `e2e/`):** las interacciones de extremo a extremo — drag & drop por teclado, agregar/quitar bloques, pantalla completa y exportar/copiar.
+
+El workflow de [GitHub Actions](.github/workflows/ci.yml) corre en cada push y pull request dos jobs: el gate (`npm run ci` + build de producción) y los E2E.
 
 ```bash
-npm run ci
+npm run ci    # typecheck + unitarios
+npm run e2e   # end-to-end (levanta el dev server solo)
 ```
