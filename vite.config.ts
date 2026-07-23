@@ -34,6 +34,9 @@ function cspPlugin(): Plugin {
 }
 
 export default defineConfig({
+  // Rutas relativas: el sitio funciona igual en la raíz o en un subpath
+  // (p. ej. GitHub Pages en /constructor-web/) sin tocar nada.
+  base: './',
   plugins: [react(), cspPlugin()],
   resolve: {
     dedupe: ['react', 'react-dom'],
