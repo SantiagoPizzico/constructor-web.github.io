@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildSpec, specToBuildPrompt, specToJson, specToMarkdown } from './export'
+import { buildSpec, specToWhatsapp } from './export'
 import type { SpecInput } from './export'
 import { registry } from '../registry'
 import { getStyle } from '../data/styles'
@@ -32,30 +32,16 @@ describe('buildSpec', () => {
   })
 })
 
-describe('serializadores', () => {
-  it('markdown incluye título, paleta con accent y secciones', () => {
-    const md = specToMarkdown(buildSpec(sampleInput()))
-    expect(md).toContain('# Diseño — Gimnasio / Fitness')
-    expect(md).toContain('| Acento | `#10b981` |')
-    expect(md).toContain('**Portada (Hero)**')
-    expect(md).toContain('(diseño: Dividido)')
-    expect(md).toContain('- [ ] Titular')
-  })
-
-  it('build-prompt incluye tokens, stack, secciones con variante y checklist de contenido', () => {
-    const p = specToBuildPrompt(buildSpec(sampleInput()))
-    expect(p).toContain('--accent: #10b981')
-    expect(p).toContain('--brand: #2563eb')
-    expect(p).toContain('React + Vite')
-    expect(p).toContain('Portada (Hero) — diseño "Dividido"')
-    expect(p).toContain('· Titular')
-  })
-
-  it('JSON es parseable y conserva la estructura', () => {
-    const json = specToJson(buildSpec(sampleInput()))
-    const parsed = JSON.parse(json)
-    expect(parsed.components).toHaveLength(2)
-    expect(parsed.theme.colors.accent).toBe('#10b981')
-    expect(parsed.business.id).toBe('gimnasio')
+describe('specToWhatsapp', () => {
+  it('arma un mensaje completo con negocio, identidad visual y secciones', () => {
+    const msg = specToWhatsapp(buildSpec(sampleInput()))
+    expect(msg).toContain('*Negocio:* Gimnasio / Fitness')
+    expect(msg).toContain('*Estilo:* Moderno')
+    expect(msg).toContain('Poppins (títulos)')
+    expect(msg).toContain('Inter (texto)')
+    expect(msg).toContain('primario #2563eb')
+    expect(msg).toContain('acento #10b981')
+    expect(msg).toContain('*Secciones (2)*')
+    expect(msg).toContain('1. Portada (Hero) (diseño: Dividido)')
   })
 })

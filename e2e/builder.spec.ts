@@ -47,10 +47,14 @@ test('reordenar por teclado cambia el orden', async ({ page }) => {
   expect(before.length).toBeGreaterThan(1)
 
   // Tomar el primer asa de arrastre, levantarla, bajar una posición y soltar.
+  // Los pequeños waits le dan tiempo al KeyboardSensor de dnd-kit a registrar
+  // cada paso del drag (sin ellos, la secuencia de teclas es flaky).
   const firstGrip = page.getByLabel('Arrastrar para reordenar').first()
   await firstGrip.focus()
   await page.keyboard.press('Space') // levantar
+  await page.waitForTimeout(200)
   await page.keyboard.press('ArrowDown') // mover una posición abajo
+  await page.waitForTimeout(200)
   await page.keyboard.press('Space') // soltar
 
   await expect(async () => {
@@ -68,19 +72,19 @@ test('pantalla completa abre y cierra el overlay', async ({ page }) => {
   await expect(page.getByText('Vista previa a pantalla completa')).not.toBeVisible()
 })
 
-test('exportar: cambiar de formato y copiar al portapapeles', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+test('enviar el diseño por WhatsApp al número fijo con el brief completo', async ({ page }) => {
+  const link = page.getByRole('link', { name: /Enviar mi diseño por WhatsApp/ })
+  await expect(link).toBeVisible()
 
-  // El formato Markdown está activo por defecto.
-  await expect(page.getByRole('button', { name: 'Diseño .md' })).toHaveAttribute('aria-pressed', 'true')
+  const href = await link.getAttribute('href')
+  expect(href).toContain('https://wa.me/542923504415?text=')
 
-  // Cambiar a Prompt y copiar.
-  await page.getByRole('button', { name: 'Prompt' }).click()
-  await expect(page.getByRole('button', { name: 'Prompt' })).toHaveAttribute('aria-pressed', 'true')
-  await page.getByRole('button', { name: /Copiar/ }).click()
-  await expect(page.getByRole('button', { name: /Copiado/ })).toBeVisible()
+  // El texto prellenado es el diseño completo (negocio + secciones).
+  const msg = decodeURIComponent(href!.split('text=')[1])
+  expect(msg).toContain('*Negocio:*')
+  expect(msg).toContain('*Secciones (')
 
-  // El portapapeles tiene el prompt de construcción.
-  const clip = await page.evaluate(() => navigator.clipboard.readText())
-  expect(clip).toContain('# Encargo: construir')
+  // Ya no existen los formatos de export anteriores.
+  await expect(page.getByRole('button', { name: 'Prompt' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'JSON' })).toHaveCount(0)
 })
