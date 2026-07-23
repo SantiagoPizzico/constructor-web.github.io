@@ -131,35 +131,27 @@ export function buildSpec(input: SpecInput): ProjectSpec {
   }
 }
 
-// Diseño completo listo para enviar por WhatsApp: negrita con *un* asterisco
-// (formato de WhatsApp), viñetas y sin tablas ni markdown, para que se lea
-// nativo en el chat. El cliente lo manda y desde ahí seguimos la charla.
+// Mensaje de WhatsApp que envía el cliente: simple, escaneable y orientado a
+// cerrar la venta. Negrita con *un* asterisco (formato de WhatsApp), viñetas y
+// sin tablas ni markdown. Termina pidiendo presupuesto y tiempos para avanzar.
 export function specToWhatsapp(spec: ProjectSpec): string {
   const c = spec.theme.colors
-  const dispositivo = spec.device === 'mobile' ? 'móvil' : 'escritorio'
 
-  const secciones = spec.components.map((comp, i) => {
-    const variante = comp.variant ? ` (diseño: ${comp.variant.name})` : ''
-    const panel = comp.isPanel ? ' [panel]' : ''
-    return `${i + 1}. ${comp.name}${variante}${panel} — ${comp.purpose}`
+  const secciones = spec.components.map((comp) => {
+    const variante = comp.variant ? ` (${comp.variant.name})` : ''
+    return `• ${comp.name}${variante}`
   })
 
   return [
-    `¡Hola! Armé el diseño de ${spec.kind} para mi negocio con tu constructor y me gustaría avanzar. 👇`,
+    `¡Hola! 👋 Diseñé ${spec.kind} para mi negocio con tu constructor y me encantó cómo quedó. Quiero ponerla online.`,
     ``,
     `*Negocio:* ${spec.business.label}`,
-    `*Tipo:* ${spec.kind}`,
-    `*Base:* ${dispositivo}`,
-    `*Estilo:* ${spec.theme.name}`,
+    `*Estilo:* ${spec.theme.name} · ${spec.theme.fonts.heading}/${spec.theme.fonts.body}`,
+    `*Paleta:* primario ${c.brand}, acento ${c.accent}`,
     ``,
-    `*Identidad visual*`,
-    `• Tipografías: ${spec.theme.fonts.heading} (títulos) / ${spec.theme.fonts.body} (texto)`,
-    `• Colores: primario ${c.brand}, acento ${c.accent}, fondo ${c.bg}`,
-    `• Radio de bordes: ${spec.theme.radius}px`,
-    ``,
-    `*Secciones (${spec.components.length})*`,
+    `*Secciones (${spec.components.length}):*`,
     ...secciones,
     ``,
-    `¿Cuándo lo podemos terminar juntos?`,
+    `¿Me pasás presupuesto y tiempos de entrega? Quiero arrancar cuanto antes 🚀`,
   ].join('\n')
 }

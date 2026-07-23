@@ -33,15 +33,13 @@ describe('buildSpec', () => {
 })
 
 describe('specToWhatsapp', () => {
-  it('arma un mensaje completo con negocio, identidad visual y secciones', () => {
+  it('arma un mensaje de venta con negocio, identidad, secciones y cierre', () => {
     const msg = specToWhatsapp(buildSpec(sampleInput()))
     expect(msg).toContain('*Negocio:* Gimnasio / Fitness')
-    expect(msg).toContain('*Estilo:* Moderno')
-    expect(msg).toContain('Poppins (títulos)')
-    expect(msg).toContain('Inter (texto)')
-    expect(msg).toContain('primario #2563eb')
-    expect(msg).toContain('acento #10b981')
-    expect(msg).toContain('*Secciones (2)*')
-    expect(msg).toContain('1. Portada (Hero) (diseño: Dividido)')
+    expect(msg).toContain('*Estilo:* Moderno · Poppins/Inter')
+    expect(msg).toContain('*Paleta:* primario #2563eb, acento #10b981')
+    expect(msg).toContain('*Secciones (2):*')
+    expect(msg).toContain('• Portada (Hero) (Dividido)')
+    expect(msg).toContain('presupuesto y tiempos de entrega')
   })
 })

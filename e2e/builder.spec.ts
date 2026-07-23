@@ -16,17 +16,17 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('carga con el rubro por defecto y secciones en el preview', async ({ page }) => {
-  // Gimnasio arranca con 9 bloques.
-  await expect(page.getByText(/^9 componentes$/)).toBeVisible()
-  await expect(page.getByText('9 bloques')).toBeVisible()
+  // Gimnasio arranca con 10 bloques.
+  await expect(page.getByText(/^10 componentes$/)).toBeVisible()
+  await expect(page.getByText('10 bloques')).toBeVisible()
   // El preview renderiza al menos una sección real.
   await expect(page.locator('main section').first()).toBeVisible()
 })
 
 test('cambiar de rubro recompone la página', async ({ page }) => {
   await page.getByLabel('Rubro').selectOption('comercio')
-  // Comercio trae 11 bloques e incluye gadgets de panel.
-  await expect(page.getByText(/^11 componentes$/)).toBeVisible()
+  // Comercio trae 12 bloques e incluye gadgets de panel.
+  await expect(page.getByText(/^12 componentes$/)).toBeVisible()
   await expect(page.locator('aside ol li').getByText('panel').first()).toBeVisible()
 })
 
