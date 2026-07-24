@@ -26,3 +26,10 @@ yarn-error.log*
 .vscode/
 .idea/
 *.swp
+
+# Documentos internos de trabajo (no se publican; se mantienen solo en local)
+/ANALISIS-*.md
+/DISEÑO.md
+/INVESTIGACION-*.md
+/REPORTE-*.md
+/REVISION-*.md
