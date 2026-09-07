@@ -108,7 +108,7 @@ function AddRow({ id }: { id: string }) {
   )
 }
 
-export default function Catalog() {
+export default function Catalog({ className = '' }: { className?: string }) {
   const order = useStore((s) => s.order)
   const setOrder = useStore((s) => s.setOrder)
   const sensors = useSensors(
@@ -130,7 +130,7 @@ export default function Catalog() {
   }
 
   return (
-    <aside className="border-r border-ui-line bg-ui-surface overflow-auto thin-scroll">
+    <aside className={`lg:border-r border-ui-line bg-ui-surface overflow-auto thin-scroll ${className}`}>
       <div className="p-3">
         <div className="flex items-center justify-between px-2 mb-2">
           <h2 className={sectionLabel()}>Tu página</h2>

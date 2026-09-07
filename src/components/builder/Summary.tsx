@@ -10,7 +10,7 @@ import { Icon } from '../ui/Icon'
 // Formato wa.me = código de país + número, solo dígitos (sin +, sin espacios).
 const WHATSAPP_PHONE = '542923504415'
 
-export default function Summary() {
+export default function Summary({ className = '' }: { className?: string }) {
   const order = useStore((s) => s.order)
   const business = useStore((s) => s.business)
   const styleId = useStore((s) => s.styleId)
@@ -32,7 +32,7 @@ export default function Summary() {
   const waLink = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(waText)}`
 
   return (
-    <aside className="border-l border-ui-line bg-ui-surface overflow-auto thin-scroll p-5 flex flex-col">
+    <aside className={`lg:border-l border-ui-line bg-ui-surface overflow-auto thin-scroll p-5 flex flex-col ${className}`}>
       <h2 className="font-semibold mb-1">Resumen</h2>
       <p className="text-sm text-ui-muted mb-4">
         Estás armando <span className="font-medium text-ui-text">{kind}</span> para {businessLabel(business)}.
