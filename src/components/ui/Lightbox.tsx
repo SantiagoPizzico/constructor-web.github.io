@@ -26,25 +26,42 @@ export function Lightbox({
   const closeRef = useRef<HTMLButtonElement>(null)
   const restoreRef = useRef<HTMLElement | null>(null)
 
+  // Los callbacks viven en refs: quien nos usa suele pasar flechas inline (nueva
+  // identidad en cada render) y, si el efecto dependiera de ellas, se re-ejecutaría
+  // a cada rato robándole el foco al usuario dentro del modal.
+  const onCloseRef = useRef(onClose)
+  const onIndexRef = useRef(onIndex)
   useEffect(() => {
-    if (index === null) return
-    const current = index
+    onCloseRef.current = onClose
+    onIndexRef.current = onIndex
+  })
+
+  // Foco y bloqueo de scroll: solo al abrir y al cerrar de verdad.
+  const abierto = index !== null
+  useEffect(() => {
+    if (!abierto) return
     restoreRef.current = document.activeElement as HTMLElement | null
     closeRef.current?.focus()
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
-      else if (e.key === 'ArrowRight' && onIndex) onIndex(Math.min(images.length - 1, current + 1))
-      else if (e.key === 'ArrowLeft' && onIndex) onIndex(Math.max(0, current - 1))
-    }
-    document.addEventListener('keydown', onKey)
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
-      document.removeEventListener('keydown', onKey)
       document.body.style.overflow = prevOverflow
       restoreRef.current?.focus?.()
     }
-  }, [index, images.length, onClose, onIndex])
+  }, [abierto])
+
+  // Teclado: depende del índice (para saber a dónde navegar) pero ya no toca el foco.
+  useEffect(() => {
+    if (index === null) return
+    const current = index
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onCloseRef.current()
+      else if (e.key === 'ArrowRight') onIndexRef.current?.(Math.min(images.length - 1, current + 1))
+      else if (e.key === 'ArrowLeft') onIndexRef.current?.(Math.max(0, current - 1))
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [index, images.length])
 
   if (index === null || typeof document === 'undefined') return null
   const img = images[index]
